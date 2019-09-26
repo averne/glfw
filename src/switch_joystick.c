@@ -126,12 +126,14 @@ void _glfwUpdateSwitchJoysticks(void)
     held = hidKeysHeld(CONTROLLER_P1_AUTO);
     up   = hidKeysUp  (CONTROLLER_P1_AUTO);
 
+    /*
     // Check for soft-reset combo
     if ((held & SOFT_RESET_COMBO) == SOFT_RESET_COMBO)
     {
         _glfwInputWindowCloseRequest(_glfw.nx.cur_window);
         return;
     }
+    */
 
 #define MAP_KEY(_libnx_key, _glfw_key, _scancode) \
     do { \
