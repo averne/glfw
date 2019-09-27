@@ -482,7 +482,29 @@ extern "C" {
 #define GLFW_KEY_RIGHT_SUPER        347
 #define GLFW_KEY_MENU               348
 
-#define GLFW_KEY_LAST               GLFW_KEY_MENU
+// Switch keys
+// Important: same order as libnx
+#define GLFW_NX_KEY_A               400
+#define GLFW_NX_KEY_B               401
+#define GLFW_NX_KEY_X               402
+#define GLFW_NX_KEY_Y               403
+#define GLFW_NX_KEY_LSTICK          404
+#define GLFW_NX_KEY_RSTICK          405
+#define GLFW_NX_KEY_L               406
+#define GLFW_NX_KEY_R               407
+#define GLFW_NX_KEY_ZL              408
+#define GLFW_NX_KEY_ZR              409
+#define GLFW_NX_KEY_PLUS            410
+#define GLFW_NX_KEY_MINUS           411
+#define GLFW_NX_KEY_DLEFT           412
+#define GLFW_NX_KEY_DUP             413
+#define GLFW_NX_KEY_DRIGHT          414
+#define GLFW_NX_KEY_DDOWN           415
+
+#define GLFW_NX_KEY_FIRST           GLFW_NX_KEY_A
+#define GLFW_NX_KEY_LAST            GLFW_NX_KEY_DDOWN
+
+#define GLFW_KEY_LAST               GLFW_NX_KEY_LAST
 
 /*! @} */
 

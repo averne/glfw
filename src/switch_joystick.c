@@ -29,6 +29,9 @@
 // Built-in soft-reset combo that triggers a GLFW window close event
 #define SOFT_RESET_COMBO (KEY_PLUS|KEY_MINUS|KEY_L|KEY_R)
 
+// Time amount (ticks) after which the driver begins emitting key held events (for switch buttons only)
+#define KEY_HELD_THRESHOLD 9600000
+
 // Internal constants for gamepad mapping source types
 #define _GLFW_JOYSTICK_AXIS     1
 #define _GLFW_JOYSTICK_BUTTON   2
@@ -135,6 +138,26 @@ void _glfwUpdateSwitchJoysticks(void)
     }
     */
 
+    // Save switch key states
+    static uint64_t nx_keys_ticks[GLFW_NX_KEY_LAST - GLFW_NX_KEY_FIRST];
+    const uint64_t tick = _glfwPlatformGetTimerValue();
+
+    for (uint32_t key = GLFW_NX_KEY_FIRST; key <= GLFW_NX_KEY_LAST; ++key) {
+        const uint32_t idx       = key - GLFW_NX_KEY_FIRST;
+        const uint32_t libnx_key = 1 << idx;
+
+        if (down & libnx_key) {
+            _glfwInputKey(_glfw.nx.cur_window, key, 0, GLFW_PRESS, 0);   // Key pressed for the first tick
+            nx_keys_ticks[idx] = tick;
+        } else if ((held & libnx_key) && (tick - nx_keys_ticks[idx] >= KEY_HELD_THRESHOLD)) {
+            _glfwInputKey(_glfw.nx.cur_window, key, 0, GLFW_REPEAT, 0);  // Key held for over KEY_HELD_THRESHOLD ticks
+        } else if (up & libnx_key) {
+            _glfwInputKey(_glfw.nx.cur_window, key, 0, GLFW_RELEASE, 0); // Key released
+            nx_keys_ticks[idx] = 0.0f;
+        }
+    }
+
+    /*
 #define MAP_KEY(_libnx_key, _glfw_key, _scancode) \
     do { \
         if (down & (_libnx_key)) _glfwInputKey(_glfw.nx.cur_window, (_glfw_key), (_scancode), GLFW_PRESS, 0); \
@@ -153,6 +176,7 @@ void _glfwUpdateSwitchJoysticks(void)
     MAP_KEY(KEY_Y, GLFW_KEY_A, KBD_A);
     MAP_KEY(KEY_PLUS, GLFW_KEY_ENTER, KBD_ENTER);
     MAP_KEY(KEY_MINUS, GLFW_KEY_ESCAPE, KBD_ESC);
+    */
 
     // Report touch inputs as mouse clicks
     if (hidTouchCount() > 0)
